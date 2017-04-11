@@ -46,8 +46,12 @@ cc_has_k_constraint := $(call try-run,echo				\
 		return 0;						\
 	}' | $(CC) -S -x c -o "$$TMP" -,,-DCONFIG_CC_HAS_K_CONSTRAINT=1)
 
-ifeq ($(CONFIG_BROKEN_GAS_INST),y)
+ifeq ($(CONFIG_ARM64), y)
+brokengasinst := $(call as-instr,1:\n.inst 0\n.rept . - 1b\n\nnop\n.endr\n,,-DCONFIG_BROKEN_GAS_INST=1)
+
+  ifneq ($(brokengasinst),)
 $(warning Detected assembler with broken .inst; disassembly will be unreliable)
+  endif
 endif
 
 KBUILD_CFLAGS	+= -mgeneral-regs-only	\
