@@ -269,13 +269,13 @@ static ssize_t kernfs_fop_read(struct file *file, char __user *user_buf,
  * modify only the the value you're changing, then write entire buffer
  * back.
  */
+
 static ssize_t kernfs_fop_write(struct file *file, const char __user *user_buf,
 				size_t count, loff_t *ppos)
 {
 	struct kernfs_open_file *of = kernfs_of(file);
 	const struct kernfs_ops *ops;
 	ssize_t len;
-	char buf_onstack[SZ_4K + 1] __aligned(sizeof(long));
 	char *buf;
 
 	if (of->atomic_write_len) {
@@ -286,14 +286,11 @@ static ssize_t kernfs_fop_write(struct file *file, const char __user *user_buf,
 		len = min_t(size_t, count, PAGE_SIZE);
 	}
 
-	if (len < sizeof(buf_onstack)) {
-		buf = buf_onstack;
+	buf = of->prealloc_buf;
+	if (buf) {
+		mutex_lock(&of->prealloc_mutex);
 	} else {
-		buf = of->prealloc_buf;
-		if (buf)
-			mutex_lock(&of->prealloc_mutex);
-		else
-			buf = kmalloc(len + 1, GFP_KERNEL);
+		buf = kmalloc(len + 1, GFP_KERNEL);
 		if (!buf)
 			return -ENOMEM;
 	}
@@ -304,10 +301,6 @@ static ssize_t kernfs_fop_write(struct file *file, const char __user *user_buf,
 	}
 	buf[len] = '\0';	/* guarantee string termination */
 
-	/*
-	 * @of->mutex nests outside active ref and is used both to ensure that
-	 * the ops aren't called concurrently for the same open file.
-	 */
 	mutex_lock(&of->mutex);
 	if (!kernfs_get_active(of->kn)) {
 		mutex_unlock(&of->mutex);
@@ -330,7 +323,7 @@ static ssize_t kernfs_fop_write(struct file *file, const char __user *user_buf,
 out_free:
 	if (buf == of->prealloc_buf)
 		mutex_unlock(&of->prealloc_mutex);
-	else if (buf != buf_onstack)
+	else
 		kfree(buf);
 	return len;
 }

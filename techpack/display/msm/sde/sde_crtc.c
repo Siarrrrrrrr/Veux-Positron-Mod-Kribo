@@ -4993,17 +4993,26 @@ static int sde_crtc_atomic_check(struct drm_crtc *crtc,
 {
 	struct drm_device *dev;
 	struct sde_crtc *sde_crtc;
-	struct plane_state pstates[SDE_PSTATES_MAX];
 	struct sde_crtc_state *cstate;
 	struct drm_display_mode *mode;
 	int rc = 0;
-	struct sde_multirect_plane_states multirect_plane[SDE_MULTIRECT_PLANE_MAX];
 	struct drm_connector *conn;
 	struct drm_connector_list_iter conn_iter;
+    
+	struct plane_state *pstates = NULL;
+	struct sde_multirect_plane_states *multirect_plane = NULL;
 
 	if (!crtc) {
 		SDE_ERROR("invalid crtc\n");
 		return -EINVAL;
+	}
+
+	pstates = kzalloc(sizeof(*pstates) * SDE_PSTATES_MAX, GFP_KERNEL);
+	multirect_plane = kzalloc(sizeof(*multirect_plane) * SDE_MULTIRECT_PLANE_MAX, GFP_KERNEL);
+
+	if (!pstates || !multirect_plane) {
+		rc = -ENOMEM;
+		goto end;
 	}
 
 	dev = crtc->dev;
@@ -5019,11 +5028,9 @@ static int sde_crtc_atomic_check(struct drm_crtc *crtc,
 	mode = &state->adjusted_mode;
 	SDE_DEBUG("%s: check", sde_crtc->name);
 
-	/* force a full mode set if active state changed */
 	if (state->active_changed)
 		state->mode_changed = true;
 
-	/* identify connectors attached to this crtc */
 	cstate->num_connectors = 0;
 
 	drm_connector_list_iter_begin(dev, &conn_iter);
@@ -5077,7 +5084,10 @@ static int sde_crtc_atomic_check(struct drm_crtc *crtc,
 				crtc->base.id, rc);
 		goto end;
 	}
+
 end:
+	kfree(pstates);
+	kfree(multirect_plane);
 	return rc;
 }
 

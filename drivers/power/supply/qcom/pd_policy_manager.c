@@ -535,9 +535,9 @@ static bool usbpd_get_pps_status(struct usbpd_pm *pdpm)
         if (apdo_cap.max_mv < pm_config.min_adapter_volt_required ||
             apdo_cap.ma < pm_config.min_adapter_curr_required)
             continue;
-            if (apdo_idx == -1) {
-                apdo_idx = cap_idx;
-                pr_err("select potential cap_idx[%d]\n", cap_idx);
+        if (apdo_idx == -1) {
+            apdo_idx = cap_idx;
+            pr_err("select potential cap_idx[%d]\n", cap_idx);
 				if(pdpm->apdo_max_volt == 10000 && pdpm->apdo_max_curr > apdo_cap.ma) {
 					pr_err("potential apdo_max_volt %d, apdo_max_volt %d\n", pdpm->apdo_max_volt, pdpm->apdo_max_curr);
 				} else {
@@ -816,35 +816,35 @@ static void usbpd_pm_update_cp_status(struct usbpd_pm *pdpm)
 
 	ret = usbpd_get_iio_channel(pdpm, CP_MASTER,
 		 CHARGE_PUMP_SC_BUS_TEMPERATURE, &val1);
-    if (!ret)
-        pdpm->cp.bus_temp = val1;
+    if (!ret) 
+        pdpm->cp.bus_temp = val1; 
 
-	ret = usbpd_get_iio_channel(pdpm, CP_MASTER,
+	  ret = usbpd_get_iio_channel(pdpm, CP_MASTER,
 		 CHARGE_PUMP_SC_BATTERY_TEMPERATURE, &val1);
-    if (!ret)
-        pdpm->cp.bat_temp = val1;
+    if (!ret) 
+        pdpm->cp.bat_temp = val1; 
 
-	ret = usbpd_get_iio_channel(pdpm, CP_MASTER,
+	  ret = usbpd_get_iio_channel(pdpm, CP_MASTER,
 		 CHARGE_PUMP_SC_DIE_TEMPERATURE, &val1);
-    if (!ret)
-        pdpm->cp.die_temp = val1;
+    if (!ret) 
+        pdpm->cp.die_temp = val1; 
 
-	ret = usbpd_get_iio_channel(pdpm, CP_MASTER,
+	  ret = usbpd_get_iio_channel(pdpm, CP_MASTER,
 		 CHARGE_PUMP_SC_BATTERY_PRESENT, &val1);
-    if (!ret)
-        pdpm->cp.batt_pres = val1;
+    if (!ret) 
+        pdpm->cp.batt_pres = val1; 
 
-	ret = usbpd_get_iio_channel(pdpm, CP_MASTER,
+	  ret = usbpd_get_iio_channel(pdpm, CP_MASTER,
 		 CHARGE_PUMP_SC_VBUS_PRESENT, &val1);
-    if (!ret)
-        pdpm->cp.vbus_pres = val1;
+    if (!ret) 
+        pdpm->cp.vbus_pres = val1; 
 
-	ret = usbpd_get_iio_channel(pdpm, CP_MASTER,
+	  ret = usbpd_get_iio_channel(pdpm, CP_MASTER,
 		 CHARGE_PUMP_CHARGING_ENABLED, &val1);
-    if (!ret)
-        pdpm->cp.charge_enabled = val1;
+    if (!ret) 
+        pdpm->cp.charge_enabled = val1; 
 
-	ret = usbpd_get_iio_channel(pdpm, CP_MASTER,
+	  ret = usbpd_get_iio_channel(pdpm, CP_MASTER,
 		 CHARGE_PUMP_SC_ALARM_STATUS, &val1);
     if (!ret) {
         pdpm->cp.bat_ovp_alarm = !!(val1 & BAT_OVP_ALARM_MASK);
@@ -884,7 +884,7 @@ static void usbpd_pm_update_cp_sec_status(struct usbpd_pm *pdpm)
 		CHARGE_PUMP_CHARGING_ENABLED, &val1);
     if (!ret)
         pdpm->cp_sec.charge_enabled = val1;
-	if(pdpm->isln8000flg) {
+	  if(pdpm->isln8000flg) {
 		ret = usbpd_get_iio_channel(pdpm, CP_SLAVE,
 			 CHARGE_PUMP_SC_ALARM_STATUS, &val1);
 	    if (!ret) {
@@ -1407,7 +1407,7 @@ static int usbpd_update_apdo_data(struct usbpd_pm *pdpm)
     if (!ret)
         pdpm->apdo_max_curr = val1;
 
-	return ret;
+	  return ret;
 #else
 #endif
 }

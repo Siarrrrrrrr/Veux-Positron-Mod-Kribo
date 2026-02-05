@@ -1776,8 +1776,8 @@ static int lpm_probe(struct platform_device *pdev)
 		int cpu;
 		int freq;
 	} eff_table[] = {
-		0, 1708800,
-		6, 1228800,
+		{ 0, 1708800 },
+		{ 6, 1228800 },
 	};
 #endif
 #ifdef CONFIG_DRM_PANEL
