@@ -729,3 +729,14 @@ CONFIG_UBSAN_TRAP=y
 # CONFIG_UBSAN_SHIFT is not set
 # CONFIG_UBSAN_BOOL is not set
 # CONFIG_UBSAN_ENUM is not set
+
+# ksu-next, susfs, with manual hook and disable kprobe
+CONFIG_KPROBES=n
+CONFIG_HAVE_KPROBES=n
+CONFIG_KPROBE_EVENTS=n
+CONFIG_KSU=y
+CONFIG_KSU_SUSFS=y
+
+# enable kallsyms for kernel-patch user
+CONFIG_KALLSYMS=y
+CONFIG_KALLSYMS_ALL=y
