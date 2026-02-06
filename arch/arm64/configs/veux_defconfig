@@ -743,3 +743,6 @@ CONFIG_KSU_SUSFS=y
 # enable kallsyms for kernel-patch user
 CONFIG_KALLSYMS=y
 CONFIG_KALLSYMS_ALL=y
+
+# enable bore
+CONFIG_SCHED_BORE=y
